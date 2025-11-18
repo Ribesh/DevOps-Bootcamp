@@ -1,11 +1,6 @@
 ## Part 1: Linux Command Line Basics
 ####  Using a Linux terminal (VM, WSL, or cloud instance):
 
--  
--   
--   
-
-## Deliverables:
 1. Create the following directory structure:
     ```bash 
     ~/devops-lab/
@@ -25,7 +20,7 @@
     tree devops-lab/
     ```
     Output:
-    ![alt text](image.png)
+    ![alt text](images/image.png)
 
 ---
 
