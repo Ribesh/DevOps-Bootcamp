@@ -1,6 +1,7 @@
 ## Part 1: Linux Command Line Basics
 ####  Using a Linux terminal (VM, WSL, or cloud instance):
 
+
 1. Create the following directory structure:
     ```bash 
     ~/devops-lab/
