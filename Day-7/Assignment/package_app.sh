@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# usage info
+usage() {
+  echo "Usage: $0 <version> [source_dir] [output_dir]"
+  echo "  version     - version string (e.g. 1.0.0)"
+  echo "  source_dir  - path to application root (default: current dir)"
+  echo "  output_dir  - where to place the tarball (default: current dir)"
+  exit 1
+}
+
+# --- Args & basic validation ---
+VERSION="${1:-}"
+SRC_DIR="${2:-$(pwd)}"
+OUT_DIR="${3:-$(pwd)}"
+
+[[ -z "$VERSION" ]] && usage
+[[ ! -d "$SRC_DIR" ]] && { echo "ERROR: Source dir '$SRC_DIR' does not exist." >&2; exit 1; }
+
+# normalize paths
+SRC_DIR="$(cd "$SRC_DIR" && pwd)"
+OUT_DIR="$(cd "$OUT_DIR" && pwd)"
+
+APP_NAME="$(basename "$SRC_DIR")"
+TARBALL_NAME="${APP_NAME}-${VERSION}.tar.gz"
+TARBALL_PATH="${OUT_DIR}/${TARBALL_NAME}"
+CHECKSUM_PATH="${TARBALL_PATH}.sha256"
+
+# --- Required file validation ---
+# For this Node app we'll require:
+#   package.json and index.js
+REQUIRED_FILES=("package.json" "index.js")
+
+for f in "${REQUIRED_FILES[@]}"; do
+  if [[ ! -f "${SRC_DIR}/${f}" ]]; then
+    echo "ERROR: Required file '${f}' not found in '${SRC_DIR}'." >&2
+    exit 1
+  fi
+done
+
+# --- Create the tarball with exclusions ---
+# exclude node_modules and .git
+tar -czf "$TARBALL_PATH" \
+  --exclude="node_modules" \
+  --exclude=".git*" \
+  --exclude="*.tar.gz" \
+  -C "$SRC_DIR" .
+
+# --- Generate checksum ---
+sha256sum "$TARBALL_PATH" > "$CHECKSUM_PATH"
+
+# --- Success output ---
+echo "Package created successfully."
+echo "Tarball : $TARBALL_PATH"
+echo "Checksum: $CHECKSUM_PATH"
