@@ -112,4 +112,4 @@ sha256sum -c node-hello-1.0.0.tar.gz.sha256
 ```
 
 ## Screenshots
-![alt text](image.png)
+![alt text](images/image.png)
